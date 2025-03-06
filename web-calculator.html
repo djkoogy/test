@@ -2,43 +2,60 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>간단한 계산기</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+        
+        html, body {
             font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+        
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
         }
         
         .calculator {
             background-color: #333;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            width: 300px;
+            padding: 15px;
+            width: 100%;
+            max-width: 500px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
         }
         
         .display {
             background-color: #eee;
             border: none;
             border-radius: 5px;
-            font-size: 24px;
-            height: 60px;
-            margin-bottom: 15px;
+            font-size: 2em;
             padding: 10px;
             text-align: right;
             width: 100%;
-            box-sizing: border-box;
+            margin-bottom: 15px;
+            flex: 0 0 auto;
+            min-height: 70px;
         }
         
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-gap: 10px;
+            flex: 1;
         }
         
         button {
@@ -47,12 +64,14 @@
             border-radius: 5px;
             color: white;
             cursor: pointer;
-            font-size: 18px;
-            height: 50px;
+            font-size: 1.5em;
             transition: background-color 0.2s;
+            touch-action: manipulation;
+            padding: 0;
+            min-height: 60px;
         }
         
-        button:hover {
+        button:hover, button:active {
             background-color: #666;
         }
         
@@ -60,7 +79,7 @@
             background-color: #f99;
         }
         
-        .operator:hover {
+        .operator:hover, .operator:active {
             background-color: #faa;
         }
         
@@ -68,7 +87,7 @@
             background-color: #f66;
         }
         
-        .equals:hover {
+        .equals:hover, .equals:active {
             background-color: #f77;
         }
         
@@ -76,8 +95,51 @@
             background-color: #f66;
         }
         
-        .clear:hover {
+        .clear:hover, .clear:active {
             background-color: #f77;
+        }
+        
+        /* 모바일 최적화 추가 */
+        @media (max-height: 600px) {
+            .calculator {
+                height: 95vh;
+                padding: 10px;
+            }
+            
+            .display {
+                min-height: 50px;
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+            
+            button {
+                min-height: 40px;
+                font-size: 1.2em;
+            }
+            
+            .buttons {
+                grid-gap: 5px;
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 450px) {
+            .calculator {
+                height: 90vh;
+                flex-direction: row;
+                padding: 10px;
+            }
+            
+            .display {
+                width: 40%;
+                height: 100%;
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            
+            .buttons {
+                width: 60%;
+                height: 100%;
+            }
         }
     </style>
 </head>
@@ -135,6 +197,11 @@
                 display.value = '오류';
             }
         }
+        
+        // 초기화 시 입력 필드에 포커스 방지
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('display').blur();
+        });
     </script>
 </body>
 </html>
