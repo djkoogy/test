@@ -3,238 +3,165 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A/B 테스트 – 광고문구 실험 (GA4 연동)</title>
-  <meta name="description" content="하나의 HTML에서 무작위로 A/B 변형을 보여주고 GA4로 이벤트를 전송하는 템플릿" />
-  <!-- GA4: Measurement ID를 꼭 교체하세요 (예: G-ABC123DEF4) -->
+  <title>A/B 테스트 – 단일 HTML (배너형 A=단순, B=복잡)</title>
+
+  <!-- GA4: Measurement ID로 교체하세요 (예: G-ABC123DEF4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C74302RKGY"></script>
   <script>
-    // ─────────────────────────────────────────────────────────────────────────────
-    // GA4 기본 설정
-    // ─────────────────────────────────────────────────────────────────────────────
+    // GA4 베이직 설정
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    // 페이지뷰를 기본으로 자동 전송해도 되지만, 변형 노출(view_variant)을 먼저 보내고 싶다면 send_page_view:false
-    gtag('config', 'G-C74302RKGY', { send_page_view: false });
-
-    // GA4 이벤트 유틸리티(안전하게 호출)
-    function gaEvent(name, params){
-      try { gtag('event', name, params); } catch(e) { console.debug('GA event skipped', name, params); }
-    }
+    gtag('config', 'G-C74302RKGY');
+    function gaEvent(name, params){ try { gtag('event', name, params); } catch(e){} }
   </script>
 
   <style>
     :root{
-      --bg: #0b1020;
-      --card: #10162a;
-      --muted: #c8d1ff;
-      --text: #e9edff;
-      --accent: #7aa2ff;
-      --accent-2: #8ef6d3;
-      --ring: rgba(122,162,255,.5);
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
+      --pink:#ffe6ef; /* B 배경 */
+      --ink:#101012;
+      --muted:#5b5e7a;
+      --accent:#0057ff;
+      --accent-2:#ff2e80;
+      --ring:#c6d5ff;
+      --radius:18px;
     }
-    *{ box-sizing: border-box; }
+    *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
-      margin:0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
-      color: var(--text);
-      background: radial-gradient(1200px 600px at 20% -10%, #1f2b6f33, transparent),
-                  radial-gradient(800px 800px at 110% 10%, #00ffd51f, transparent),
-                  var(--bg);
-      display:flex; align-items:center; justify-content:center; padding:32px;
+      margin:0; font-family:Pretendard, Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+      color:var(--ink);
+      background:#fff; /* A 기본 */
+      display:grid; place-items:center; min-height:100vh;
     }
 
-    .shell{ width:min(1100px, 100%); }
+    /* 공통 배너 컨테이너 */
+    .banner{ width:min(1100px, 94vw); }
 
-    .card{
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)) border-box,
-        linear-gradient(145deg, rgba(138,180,255,.6), rgba(142,246,211,.35)) padding-box;
-      border:1px solid transparent; border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden; position:relative;
+    /* A: 단순 배너 */
+    .simple{
+      border:1px solid #e6e8f2; border-radius:var(--radius);
+      padding:42px; text-align:center; background:#ffffff;
+      box-shadow:0 8px 24px rgba(0,0,0,.06);
     }
-    .ribbon{
-      position:absolute; inset:auto 16px 16px auto; z-index:3;
-      padding:6px 10px; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-      background: linear-gradient(145deg, #2b3566, #1b224a);
-      color:#cfe0ff; border:1px solid #33407d; border-radius:10px;
-      backdrop-filter: blur(8px);
+    .simple .eyebrow{ letter-spacing:.16em; text-transform:uppercase; color:#7b7f99; font-size:12px; }
+    .simple h1{ margin:10px 0 8px; font-size:clamp(24px,4vw,40px); line-height:1.1; font-weight:800; }
+    .simple p{ margin:0 0 18px; color:#666a86; font-size:clamp(14px,2vw,18px); }
+    .btn{ cursor:pointer; border:1px solid transparent; border-radius:12px; padding:14px 18px; font-weight:800; }
+    .btn.primary{ background:var(--ink); color:#fff; }
+    .btn.ghost{ background:transparent; color:#2b2f55; border-color:#c9cbe0; }
+
+    /* B: 복잡 배너 */
+    .complex-wrap{ background:var(--pink); border-radius:var(--radius); border:1px solid #ffc4d8; overflow:hidden; }
+    .complex{
+      display:grid; grid-template-columns: 1.1fr .9fr; gap:28px; align-items:center;
+      padding:32px; position:relative;
+    }
+    @media (max-width: 900px){ .complex{ grid-template-columns:1fr; } }
+
+    .badges{ display:flex; gap:8px; flex-wrap:wrap; }
+    .badge{ background:#ffffffcc; border:1px solid #ffd3e3; color:#6b1a36; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+    .headline{ font-size:clamp(26px,4.2vw,44px); line-height:1.1; margin:12px 0 10px; font-weight:900; }
+    .sub{ color:#6b1a36; font-size:clamp(14px,2vw,18px); margin:0 0 18px; }
+
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn.grad{ background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; box-shadow:0 10px 20px rgba(255,46,128,.25); }
+    .note{ font-size:12px; color:#7a2040; }
+
+    .product{
+      aspect-ratio: 4/3; border:2px dashed #ffb3ca; border-radius:16px; background:#fff8fb;
+      display:grid; place-items:center; color:#cc3b72; font-weight:800;
     }
 
-    header{
-      padding:40px 28px 12px; display:flex; gap:14px; align-items:center; justify-content:space-between;
-    }
-    .brand{ display:flex; align-items:center; gap:12px; }
-    .logo{
-      width:38px; height:38px; border-radius:12px;
-      background: conic-gradient(from 120deg, var(--accent), var(--accent-2), var(--accent));
-      box-shadow: inset 0 0 20px #00000055, 0 0 0 3px #ffffff0f;
-    }
-    .brand h1{ font-size:16px; margin:0; color:#dbe4ff; letter-spacing:.02em; font-weight:700; }
+    /* 장식 */
+    .confetti{ position:absolute; inset:0; pointer-events:none; }
+    .dot{ position:absolute; width:8px; height:8px; border-radius:50%; background:#ff6aa5; opacity:.5; }
 
-    .hero{
-      display:grid; grid-template-columns: 1.1fr .9fr; gap:28px; align-items:center; padding:0 28px 28px;
-    }
-    @media (max-width: 900px){ .hero{ grid-template-columns: 1fr; } }
-
-    .copy{ padding:10px 0 0; }
-    .eyebrow{ color:#9db0ff; font-size:14px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; opacity:.9; }
-    .title{ font-size: clamp(26px, 4vw, 44px); line-height:1.1; margin:0 0 14px; font-weight:800; }
-    .subtitle{ color: var(--muted); font-size: clamp(14px, 2vw, 18px); line-height:1.6; margin:0 0 26px; }
-
-    .cta-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    .btn{
-      appearance:none; border:1px solid transparent; cursor:pointer; font-weight:700;
-      padding:14px 18px; border-radius:14px; transition: all .25s ease; font-size:16px;
-      background: linear-gradient(145deg, var(--accent), #4167ff);
-      color:#0b1020; box-shadow: 0 6px 18px rgba(94,126,255,.4);
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(94,126,255,.45); }
-    .btn:active{ transform: translateY(0); }
-
-    .ghost{
-      background: transparent; color: #bcd1ff;
-      border-color:#33407d; box-shadow: inset 0 0 0 1px #33407d;
-    }
-    .ghost:hover{ background:#1a244b; }
-
-    .panel{
-      background: linear-gradient(180deg, #0e1430, #0b1020); border:1px solid #1e2a57; border-radius: 16px;
-      padding:18px; display:grid; gap:8px;
-    }
-    .panel h3{ margin:0; font-size:14px; color:#b6c6ff; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
-    .metrics{ display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; }
-    .metric{ background:#0c122b; border:1px solid #1a2452; border-radius:12px; padding:14px; }
-    .metric .k{ font-size:22px; font-weight:800; }
-    .metric .l{ font-size:12px; color:#9db0ff; opacity:.85; }
-
-    .art{
-      position:relative; height: 360px; border-radius: 16px; overflow:hidden; border: 1px solid #253063;
-      background: radial-gradient(120% 80% at 20% 0%, #2b3a88, transparent 60%),
-                  radial-gradient(120% 80% at 90% 0%, #0fd7a5, transparent 50%),
-                  linear-gradient(180deg, #0f1540, #0a0f22);
-    }
-    .orb{ position:absolute; border-radius:50%; filter: blur(6px); opacity:.85; mix-blend-mode:screen; }
-    .orb.a{ width:180px; height:180px; left:-20px; top:80px; background:#7aa2ff; }
-    .orb.b{ width:240px; height:240px; right: -30px; top: -30px; background:#8ef6d3; }
-    .orb.c{ width:120px; height:120px; left: 50%; bottom: -20px; transform:translateX(-50%); background:#a6b8ff; }
-
-    footer{ padding: 22px 28px 30px; display:flex; justify-content:space-between; align-items:center; gap:12px; color:#9fb3ff; border-top:1px solid #1c264e; }
-    footer small{ opacity:.85; }
-
-    /* 접근성 보조 */
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    footer{ margin-top:14px; font-size:12px; color:#7f84a8; text-align:center; }
+    code{ background:#f3f5ff; border:1px solid #dee3ff; color:#2b2f55; padding:2px 6px; border-radius:6px; }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="card">
-      <span id="ribbon" class="ribbon" aria-live="polite" aria-atomic="true">Variant</span>
-      <header>
-        <div class="brand" aria-label="브랜드">
-          <div class="logo" aria-hidden="true"></div>
-          <h1>NovaCommerce</h1>
-        </div>
-      </header>
-
-      <section class="hero" role="region" aria-label="히어로">
-        <div class="copy">
-          <p id="eyebrow" class="eyebrow">한정 혜택</p>
-          <h2 id="title" class="title">지금 가장 똑똑한 쇼핑을 시작하세요</h2>
-          <p id="subtitle" class="subtitle">빠른 배송과 안심 보장으로 구매 경험을 새롭게. 지금 바로 혜택을 확인하세요.</p>
-
-          <div class="cta-row">
-            <button id="purchaseBtn" class="btn" aria-label="구매하기">구매하기</button>
-            <button id="learnBtn" class="btn ghost" aria-label="자세히 보기">자세히 보기</button>
-          </div>
-
-          <div class="panel" style="margin-top:18px;">
-            <h3>실시간 신뢰 지표</h3>
-            <div class="metrics">
-              <div class="metric"><div class="k" id="m1">4.9★</div><div class="l">사용자 평점</div></div>
-              <div class="metric"><div class="k" id="m2">24H</div><div class="l">평균 배송</div></div>
-              <div class="metric"><div class="k" id="m3">98%</div><div class="l">재구매 의사</div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="art" aria-hidden="true">
-          <div class="orb a"></div>
-          <div class="orb b"></div>
-          <div class="orb c"></div>
-        </div>
-      </section>
-
-      <footer>
-        <small>© <span id="year"></span> NovaCommerce – 실험용 랜딩 페이지</small>
-        <small id="variantLabel">A/B Variant</small>
-      </footer>
-    </div>
-  </div>
+  <main id="root" class="banner" role="main" aria-live="polite" aria-atomic="true"></main>
+  <footer>단일 HTML · 새로고침 시 무작위 A/B · 강제 테스트: URL에 <code>?v=A</code> 또는 <code>?v=B</code></footer>
 
   <script>
-    // ─────────────────────────────────────────────────────────────────────────────
-    // A/B Variant 할당 & UI 반영
-    // ─────────────────────────────────────────────────────────────────────────────
-    const VARIANT_KEY = 'ab_variant_v1'; // 버전 관리용 키
+    // ─────────────────────────────────────────────────────────────
+    // 랜덤 배정 (매 로드마다) + 쿼리로 강제 (?v=A|B)
+    // ─────────────────────────────────────────────────────────────
+    function getQueryVariant(){
+      const v = new URLSearchParams(location.search).get('v');
+      return (v==='A'||v==='B') ? v : null;
+    }
+    function randomVariant(){ return Math.random() < 0.5 ? 'A' : 'B'; }
+    const variant = getQueryVariant() || randomVariant();
 
-    function pickVariant(){
-      const saved = localStorage.getItem(VARIANT_KEY);
-      if(saved === 'A' || saved === 'B') return saved; // 세션 유지
-      const v = Math.random() < 0.5 ? 'A' : 'B';
-      localStorage.setItem(VARIANT_KEY, v);
-      return v;
+    // 렌더러
+    const root = document.getElementById('root');
+
+    function renderA(){
+      document.body.style.background = '#ffffff';
+      root.innerHTML = `
+        <section class="simple" aria-label="단순 배너">
+          <div class="eyebrow">한정 혜택</div>
+          <h1>오늘 주문하면 내일 도착</h1>
+          <p>빠른 배송 · 전액 환불 보장</p>
+          <div>
+            <button id="ctaBuy" class="btn primary">구매하기</button>
+            <button id="ctaMore" class="btn ghost">자세히 보기</button>
+          </div>
+        </section>
+      `;
     }
 
-    const variant = pickVariant();
-    document.body.dataset.variant = variant;
-
-    // UI 문구: 카피만 다르고 디자인은 동일 (공정 비교)
-    const variants = {
-      A: {
-        eyebrow: '지금만 할인',
-        title: '오늘 주문하면 내일 도착합니다',
-        subtitle: '번개 같은 배송과 무조건 환불 보장. 필요한 순간, 가장 빠르게.'
-      },
-      B: {
-        eyebrow: '베스트셀러 혜택',
-        title: '후회 없는 선택, 지금 가장 많이 사는 그 제품',
-        subtitle: '사용자 98%가 추천한 베스트 픽. 품절 전에 잡으세요.'
+    function renderB(){
+      document.body.style.background = 'var(--pink)';
+      root.innerHTML = `
+        <section class="complex-wrap" aria-label="복잡 배너">
+          <div class="complex">
+            <div>
+              <div class="badges">
+                <span class="badge">베스트셀러</span>
+                <span class="badge">오늘만 15% OFF</span>
+                <span class="badge">무료 반품</span>
+              </div>
+              <h2 class="headline">후회 없는 선택, 지금 가장 많이 사는 그 제품</h2>
+              <p class="sub">사용자 98%가 추천한 베스트 픽. 품절 전에 잡으세요.</p>
+              <div class="cta-row">
+                <button id="ctaBuy" class="btn grad">지금 구매</button>
+                <button id="ctaMore" class="btn ghost">자세히 보기</button>
+                <span class="note">남은 수량: 24개 · 평균 배송 24H</span>
+              </div>
+            </div>
+            <div class="product">이미지 영역(샘플)</div>
+            <svg class="confetti" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </div>
+        </section>
+      `;
+      // 간단한 장식 점 몇 개
+      const confetti = root.querySelector('.confetti');
+      for(let i=0;i<10;i++){
+        const d = document.createElement('div');
+        d.className='dot'; d.style.left=Math.random()*100+'%'; d.style.top=Math.random()*100+'%';
+        d.style.opacity=0.25 + Math.random()*0.5; d.style.transform=`scale(${0.6+Math.random()*1.2})`;
+        confetti.appendChild(d);
       }
-    };
+    }
 
-    (function applyCopy(){
-      const {eyebrow, title, subtitle} = variants[variant];
-      document.getElementById('eyebrow').textContent = eyebrow;
-      document.getElementById('title').textContent = title;
-      document.getElementById('subtitle').textContent = subtitle;
-      document.getElementById('variantLabel').textContent = `Variant ${variant}`;
-      document.getElementById('ribbon').textContent = `Variant ${variant}`;
-      document.getElementById('year').textContent = new Date().getFullYear();
-    })();
+    if(variant === 'A') renderA(); else renderB();
 
-    // 변형 노출 이벤트 전송(세션당 1회만 전송하고 싶다면 플래그 추가 가능)
+    // GA4 노출 이벤트
     gaEvent('view_variant', { variant });
 
-    // CTA 클릭 추적
-    const purchaseBtn = document.getElementById('purchaseBtn');
-    const learnBtn = document.getElementById('learnBtn');
-
-    purchaseBtn.addEventListener('click', () => {
-      gaEvent('purchase_click', { variant, cta_location: 'hero', button_text: '구매하기' });
-      // 실제 구매 플로우가 있다면 이곳에서 결제 페이지로 이동
-      // location.href = '/checkout';
-      purchaseBtn.disabled = true;
-      purchaseBtn.textContent = '처리 중...';
-      setTimeout(() => { purchaseBtn.textContent = '구매하기'; purchaseBtn.disabled = false; }, 800);
-    });
-
-    learnBtn.addEventListener('click', () => {
-      gaEvent('learn_more', { variant, cta_location: 'hero', button_text: '자세히 보기' });
-      alert('자세한 소개 페이지는 실험 템플릿이므로 연결되어 있지 않습니다.');
+    // 클릭 추적(델리게이션)
+    document.addEventListener('click', (e)=>{
+      const t = e.target;
+      if(t && t.id === 'ctaBuy'){
+        gaEvent('purchase_click', { variant, cta:'buy', banner: variant==='A'?'simple':'complex' });
+      }
+      if(t && t.id === 'ctaMore'){
+        gaEvent('learn_more', { variant, cta:'more', banner: variant==='A'?'simple':'complex' });
+      }
     });
   </script>
 </body>
