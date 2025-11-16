@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 프로필 페이지</title>
+    <!-- Tailwind CSS CDN 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter 폰트 사용을 위한 설정 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* 부드러운 스크롤을 위한 기본 스타일 */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-6 font-sans">
+
+    <!-- 메인 카드 -->
+    <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md mx-auto p-8 text-center">
+        
+        <!-- 프로필 이미지 -->
+        <img 
+            src="https://placehold.co/120x120/E0E7FF/4F46E5?text=Profile" 
+            alt="프로필 이미지" 
+            class="w-32 h-32 rounded-full mx-auto mb-5 shadow-lg border-4 border-white"
+        >
+
+        <!-- 이름 또는 핸들 -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            안녕하세요! [여기에 이름 입력]
+        </h1>
+
+        <!-- 짧은 소개 -->
+        <p class="text-gray-600 text-lg mb-8">
+            이곳에 나를 소개하는 멋진 문구를 넣어보세요. 
+            취미, 직업, 좌우명 등 무엇이든 좋습니다.
+        </p>
+
+        <!-- 링크 목록 -->
+        <div class="flex flex-col space-y-4">
+            <!-- 링크 1 -->
+            <a href="#" 
+               class="bg-indigo-600 text-white text-lg font-semibold py-4 px-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:bg-indigo-700 hover:scale-105 transform">
+                <i class="fas fa-blog mr-2"></i> 내 블로그
+            </a>
+            
+            <!-- 링크 2 -->
+            <a href="#" 
+               class="bg-indigo-600 text-white text-lg font-semibold py-4 px-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:bg-indigo-700 hover:scale-105 transform">
+                <i class="fas fa-briefcase mr-2"></i> 포트폴리오
+            </a>
+
+            <!-- 링크 3 -->
+            <a href="#" 
+               class="bg-gray-700 text-white text-lg font-semibold py-4 px-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:bg-gray-800 hover:scale-105 transform">
+                <i class="fab fa-github mr-2"></i> GitHub
+            </a>
+
+            <!-- 링크 4 -->
+            <a href="#" 
+               class="bg-pink-500 text-white text-lg font-semibold py-4 px-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:bg-pink-600 hover:scale-105 transform">
+                <i class="fab fa-instagram mr-2"></i> Instagram
+            </a>
+        </div>
+
+        <!-- SNS 아이콘 (선택 사항) -->
+        <div class="flex justify-center space-x-6 mt-10">
+            <!-- X (트위터) 아이콘 -->
+            <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors duration-200">
+                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <!-- 링크드인 아이콘 -->
+            <a href="#" class="text-gray-500 hover:text-blue-700 transition-colors duration-200">
+                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"/>
+                </svg>
+            </a>
+            <!-- 이메일 아이콘 -->
+            <a href="mailto:email@example.com" class="text-gray-500 hover:text-red-600 transition-colors duration-200">
+                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+                </svg>
+            </a>
+        </div>
+        
+    </div>
+
+    <!-- Font Awesome 아이콘 CDN (링크 아이콘용 - 선택 사항) -->
+    <!-- 위 코드에서 i 태그 아이콘을 사용하려면 아래 링크의 주석을 해제하세요. -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script> -->
+
+</body>
+</html>
